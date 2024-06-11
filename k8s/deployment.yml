@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stone-teste-api
-  namespace: teste-stone-api
+  namespace: stone-teste-api
 spec:
   replicas: 1
   selector:
