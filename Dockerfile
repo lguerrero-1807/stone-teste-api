@@ -1,31 +1,20 @@
-# Etapa de build
-#FROM golang:1.19 as builder
-#WORKDIR /app
-#COPY app/go.mod app/go.sum ./
-#RUN go mod download
-#COPY app/*.go ./
-#RUN go mod tidy
-#RUN ls -la /app
-#RUN go env
-#RUN CGO_ENABLED=0 GOOS=linux go build -o /main .
-#
-# Etapa final
-#FROM alpine:latest
-#WORKDIR /
-#COPY --from=builder /main .
-#CMD ["./main"]
-############################
-# Etapa de build
-# Etapa de build
-FROM golang:1.19 as builder
-WORKDIR /app
-COPY app/go.mod app/go.sum ./
-RUN go mod download
-COPY app/*.go ./
-RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+# Usar uma imagem base oficial do Python
+FROM python:3.9-slim
 
-# Etapa final
-FROM alpine:latest
-WORKDIR /
-COPY --from=builder /app/main .
-CMD ["./main"]
+# Definir o diretório de trabalho
+WORKDIR /app
+
+# Copiar os requisitos para o diretório de trabalho
+COPY app/requirements.txt .
+
+# Instalar dependências
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar o código da aplicação para o diretório de trabalho
+COPY app/app.py .
+
+# Expor a porta na qual a aplicação será executada
+EXPOSE 5000
+
+# Comando para rodar a aplicação
+CMD ["python", "app.py"]
