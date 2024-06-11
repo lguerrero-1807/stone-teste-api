@@ -4,9 +4,10 @@ metadata:
   name: stone-teste-api-service
   namespace: stone-teste-api
 spec:
-  ports:
-    - port: 80
-      targetPort: 5000
   selector:
     app: stone-teste-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
   type: NodePort
