@@ -4,14 +4,14 @@ metadata:
   name: stone-teste-api-ingress
   namespace: teste-stone-api
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /api(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /api
+            pathType: Prefix
             backend:
               service:
                 name: stone-teste-api-service
