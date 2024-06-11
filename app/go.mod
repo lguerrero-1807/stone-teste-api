@@ -1,10 +1,10 @@
 module stone-teste-api
 
-go 1.22.4
+go 1.19
 
 require (
-	k8s.io/apimachinery v0.30.1
-	k8s.io/client-go v0.30.1
+    k8s.io/client-go v0.22.0
+    github.com/gin-gonic/gin v1.7.7
 )
 
 require (
