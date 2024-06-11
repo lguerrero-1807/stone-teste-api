@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 import logging
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
@@ -27,30 +27,32 @@ def get_info():
             "namespaces": namespaces
         }
         logger.info("Informações do cluster e namespace obtidas")
-        return jsonify(cluster_info)
+        return render_template('index.html', cluster_info=cluster_info)
     except Exception as e:
         logger.error(f"Erro ao obter informações: {e}")
-        return jsonify({"error": str(e)}), 500
+        return render_template('index.html', error=str(e))
 
-@app.route('/api/namespace', methods=['POST'])
+@app.route('/api/namespaces', methods=['GET', 'POST'])
 def create_namespace():
-    try:
-        data = request.get_json()
-        namespace_name = data.get("namespace")
-        if not namespace_name:
-            return jsonify({"error": "O nome do namespace é obrigatório"}), 400
+    if request.method == 'POST':
+        try:
+            namespace_name = request.form['namespace']
+            if not namespace_name:
+                return render_template('namespace.html', error="O nome do namespace é obrigatório")
 
-        # Criar o namespace
-        body = client.V1Namespace(metadata=client.V1ObjectMeta(name=namespace_name))
-        v1.create_namespace(body=body)
-        logger.info(f"Namespace '{namespace_name}' criado com sucesso")
-        return jsonify({"message": f"Namespace '{namespace_name}' criado com sucesso"}), 201
-    except ApiException as e:
-        logger.error(f"Erro ao criar namespace: {e}")
-        return jsonify({"error": e.reason}), e.status
-    except Exception as e:
-        logger.error(f"Erro ao criar namespace: {e}")
-        return jsonify({"error": str(e)}), 500
+            # Criar o namespace
+            body = client.V1Namespace(metadata=client.V1ObjectMeta(name=namespace_name))
+            v1.create_namespace(body=body)
+            logger.info(f"Namespace '{namespace_name}' criado com sucesso")
+            return redirect(url_for('get_info'))
+        except ApiException as e:
+            logger.error(f"Erro ao criar namespace: {e}")
+            return render_template('namespace.html', error=e.reason)
+        except Exception as e:
+            logger.error(f"Erro ao criar namespace: {e}")
+            return render_template('namespace.html', error=str(e))
+    else:
+        return render_template('namespace.html')
 
 if __name__ == '__main__':
     logger.info("Inicializando a aplicação...")
