@@ -16,4 +16,4 @@ spec:
               service:
                 name: stone-teste-api-service
                 port:
-                  number: 5000
+                  number: 80
