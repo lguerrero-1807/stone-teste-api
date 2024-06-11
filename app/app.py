@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 @app.route('/api')
-def index():
+def api():
     logger.info("Requisição recebida na rota /api")
     logger.info(f"Headers: {request.headers}")
     return jsonify(message="It's working")
