@@ -4,7 +4,7 @@ metadata:
   name: stone-teste-api
   namespace: teste-stone-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: stone-teste-api
