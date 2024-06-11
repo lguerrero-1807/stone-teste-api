@@ -50,3 +50,5 @@ jobs:
           kubectl set image deployment/stone-teste-api stone-teste-api=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG -n stone-teste-api
           kubectl apply -f k8s/service.yml
           kubectl apply -f k8s/ingress.yml
+          kubectl apply -f k8s/roles.yml
+          kubectl apply -f k8s/rolebinding.yml
