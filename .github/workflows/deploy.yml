@@ -30,16 +30,23 @@ jobs:
       - name: Build and push Docker image
         id: build-image
         run: |
-          IMAGE_TAG=${{ github.sha }}
+          IMAGE_TAG=latest
           docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG --push .
+
+      - name: Create namespace
+        env:
+          EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+        run: |
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
+          kubectl apply -f k8s/namespace.yml
 
       - name: Update Kubernetes deployment
         env:
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: latest
         run: |
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
           kubectl apply -f k8s/deployment.yml
-          kubectl set image deployment/stone-teste-api api-container=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG
+          kubectl set image deployment/stone-teste-api api-container=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG -n teste-stone-api
           kubectl apply -f k8s/service.yml
           kubectl apply -f k8s/ingress.yml
