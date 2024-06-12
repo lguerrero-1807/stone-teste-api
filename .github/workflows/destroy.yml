@@ -7,6 +7,13 @@ on:
         description: 'Confirm to destroy resources'
         required: true
         type: boolean
+      environment:
+        description: 'Environment to destroy (prod or stgn)'
+        required: true
+        type: choice
+        options:
+          - prod
+          - stgn
 
 jobs:
   terraform:
@@ -31,14 +38,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Set environment variable
+        run: echo "TF_VAR_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend-config="path=environments/${{ env.TF_VAR_ENV }}/terraform.tfstate"
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan Destroy
-        run: terraform plan -destroy
+        run: terraform plan -destroy -var-file="environments/${{ env.TF_VAR_ENV }}/terraform.tfvars"
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -var-file="environments/${{ env.TF_VAR_ENV }}/terraform.tfvars"
