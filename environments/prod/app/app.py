@@ -27,10 +27,10 @@ def get_info():
             "namespaces": namespaces
         }
         logger.info("Informações do cluster e namespace obtidas")
-        return render_template('index.html', cluster_info=cluster_info)
+        return render_template('index-stgn.html', cluster_info=cluster_info)
     except Exception as e:
         logger.error(f"Erro ao obter informações: {e}")
-        return render_template('index.html', error=str(e))
+        return render_template('index-stgn.html', error=str(e))
 
 @app.route('/api/namespaces', methods=['GET', 'POST'])
 def create_namespace():
@@ -38,7 +38,7 @@ def create_namespace():
         try:
             namespace_name = request.form['namespace']
             if not namespace_name:
-                return render_template('namespace.html', error="O nome do namespace é obrigatório")
+                return render_template('namespace-stgn.html', error="O nome do namespace é obrigatório")
 
             # Criar o namespace
             body = client.V1Namespace(metadata=client.V1ObjectMeta(name=namespace_name))
@@ -47,12 +47,12 @@ def create_namespace():
             return redirect(url_for('get_info'))
         except ApiException as e:
             logger.error(f"Erro ao criar namespace: {e}")
-            return render_template('namespace.html', error=e.reason)
+            return render_template('namespace-stgn.html', error=e.reason)
         except Exception as e:
             logger.error(f"Erro ao criar namespace: {e}")
-            return render_template('namespace.html', error=str(e))
+            return render_template('namespace-stgn.html', error=str(e))
     else:
-        return render_template('namespace.html')
+        return render_template('namespace-stgn.html')
 
 if __name__ == '__main__':
     logger.info("Inicializando a aplicação...")

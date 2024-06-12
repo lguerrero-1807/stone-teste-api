@@ -90,4 +90,4 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     logger.info("Inicializando a aplicação...")
-    app.run(host='0.0.0.0', port=5000, debug=True)  # Iniciar com debug=True
+    app.run(host='0.0.0.0', port=5000)
