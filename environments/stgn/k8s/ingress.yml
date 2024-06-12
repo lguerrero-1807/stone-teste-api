@@ -15,3 +15,17 @@ spec:
                 name: stone-teste-api-service-stgn
                 port:
                   number: 80
+          - path: /api-stgn/namespaces
+            pathType: Prefix
+            backend:
+              service:
+                name: stone-teste-api-service-stgn
+                port:
+                  number: 80
+          - path: /teste
+            pathType: Prefix
+            backend:
+              service:
+                name: stone-teste-api-service-stgn
+                port:
+                  number: 80
