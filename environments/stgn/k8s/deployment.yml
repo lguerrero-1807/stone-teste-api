@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stone-teste-api-stgn
+  namespace: stone-teste-api-stgn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stone-teste-api-stgn
+  template:
+    metadata:
+      labels:
+        app: stone-teste-api-stgn
+    spec:
+      containers:
+        - name: stone-teste-api-stgn
+          image: 991749518377.dkr.ecr.us-east-1.amazonaws.com/stone-teste-api-stgn:latest
+          ports:
+            - containerPort: 5000

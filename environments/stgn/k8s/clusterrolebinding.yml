@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: namespace-manager-binding-stgn
+subjects:
+  - kind: ServiceAccount
+    name: default  # ou substitua por outra service account se estiver usando uma diferente
+    namespace: stone-teste-api-stgn
+roleRef:
+  kind: ClusterRole
+  name: namespace-manager-stgn
+  apiGroup: rbac.authorization.k8s.io

@@ -1,4 +1,4 @@
-name: Deploy to Kubernetes
+name: Deploy Staging
 
 on:
   push:
@@ -30,25 +30,25 @@ jobs:
       - name: Build and push Docker image
         id: build-image
         run: |
-          IMAGE_TAG=latest
-          docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG --push .
+          IMAGE_TAG=staging
+          docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ECR_REGISTRY_STGN }}/${{ secrets.AWS_ECR_REPOSITORY_STGN }}:$IMAGE_TAG --push .
 
       - name: Create namespace
         env:
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
         run: |
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
-          kubectl apply -f k8s/namespace.yml
+          kubectl apply -f envs/staging/namespace-stgn.yml
 
       - name: Update Kubernetes deployment
         env:
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
-          IMAGE_TAG: latest
+          IMAGE_TAG: staging
         run: |
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
-          kubectl apply -f k8s/deployment.yml
-          kubectl set image deployment/stone-teste-api stone-teste-api=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG -n stone-teste-api
-          kubectl apply -f k8s/service.yml
-          kubectl apply -f k8s/ingress.yml
-          kubectl apply -f k8s/clusterrole.yml
-          kubectl apply -f k8s/clusterrolebinding.yml
+          kubectl apply -f envs/staging/deployment-stgn.yml
+          kubectl set image deployment/stone-teste-api-stgn stone-teste-api-stgn=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG -n stone-teste-api-stgn
+          kubectl apply -f envs/staging/service-stgn.yml
+          kubectl apply -f envs/staging/ingress-stgn.yml
+          kubectl apply -f envs/staging/clusterrole-stgn.yml
+          kubectl apply -f envs/staging/clusterrolebinding-stgn.yml
