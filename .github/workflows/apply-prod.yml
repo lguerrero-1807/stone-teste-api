@@ -31,7 +31,7 @@ jobs:
         id: build-image
         run: |
           IMAGE_TAG=latest
-          docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG --push .
+          docker buildx build --file Dockerfile.prod --platform linux/amd64 -t ${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG --push .
 
       - name: Create namespace
         env:

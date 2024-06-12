@@ -9,13 +9,13 @@ COPY environments/prod/app/requirements.txt .
 
 # Instalar dependências
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install gunicorn  # Instalar Gunicorn
 
 # Copiar o código da aplicação para o diretório de trabalho
-COPY environments/prod/app/app.py .
-COPY environments/prod/app/templates ./templates
+COPY environments/prod/app/ .
 
 # Expor a porta na qual a aplicação será executada
 EXPOSE 5000
 
-# Comando para rodar a aplicação
-CMD ["python", "app.py"]
+# Comando para rodar a aplicação com Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--log-level", "info", "app:app"]

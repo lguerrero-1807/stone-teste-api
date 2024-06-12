@@ -3,7 +3,7 @@ name: Deploy Staging
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
   build:
@@ -31,7 +31,7 @@ jobs:
         id: build-image
         run: |
           IMAGE_TAG=staging
-          docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ECR_REGISTRY_STGN }}/${{ secrets.AWS_ECR_REPOSITORY_STGN }}:$IMAGE_TAG --push .
+          docker buildx build --file Dockerfile.staging --platform linux/amd64 -t ${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG --push .
 
       - name: Create namespace
         env:
@@ -47,8 +47,8 @@ jobs:
         run: |
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
           kubectl apply -f environments/stgn/k8s/deployment.yml
-          kubectl set image deployment/stone-teste-api-stgn stone-teste-api-stgn=${{ secrets.AWS_ECR_REGISTRY_STGN }}/${{ secrets.AWS_ECR_REPOSITORY_STGN }}:$IMAGE_TAG -n stone-teste-api-stgn
-          kubectl apply -f environments/stgn/k8s/service.yml
-          kubectl apply -f environments/stgn/k8s/ingress.yml
-          kubectl apply -f environments/stgn/k8s/clusterrole.yml
-          kubectl apply -f environments/stgn/k8s/clusterrolebinding.yml
+          kubectl set image deployment/stone-teste-api-stgn stone-teste-api-stgn=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG -n stone-teste-api-stgn
+          kubectl apply -f environments/stng/k8s/service.yml
+          kubectl apply -f environments/stng/k8s/ingress.yml
+          kubectl apply -f environments/stng/k8s/clusterrole.yml
+          kubectl apply -f environments/stng/k8s/clusterrolebinding.yml
