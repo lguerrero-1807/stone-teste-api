@@ -38,7 +38,7 @@ jobs:
           EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
         run: |
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
-          kubectl apply -f envs/staging/namespace-stgn.yml
+          kubectl apply -f environments/stgn/k8s/namespace.yml
 
       - name: Update Kubernetes deployment
         env:
@@ -46,9 +46,9 @@ jobs:
           IMAGE_TAG: staging
         run: |
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region ${{ secrets.AWS_REGION }}
-          kubectl apply -f envs/staging/deployment-stgn.yml
-          kubectl set image deployment/stone-teste-api-stgn stone-teste-api-stgn=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.AWS_ECR_REPOSITORY }}:$IMAGE_TAG -n stone-teste-api-stgn
-          kubectl apply -f envs/staging/service-stgn.yml
-          kubectl apply -f envs/staging/ingress-stgn.yml
-          kubectl apply -f envs/staging/clusterrole-stgn.yml
-          kubectl apply -f envs/staging/clusterrolebinding-stgn.yml
+          kubectl apply -f environments/stgn/k8s/deployment.yml
+          kubectl set image deployment/stone-teste-api-stgn stone-teste-api-stgn=${{ secrets.AWS_ECR_REGISTRY_STGN }}/${{ secrets.AWS_ECR_REPOSITORY_STGN }}:$IMAGE_TAG -n stone-teste-api-stgn
+          kubectl apply -f environments/stgn/k8s/service.yml
+          kubectl apply -f environments/stgn/k8s/ingress.yml
+          kubectl apply -f environments/stgn/k8s/clusterrole.yml
+          kubectl apply -f environments/stgn/k8s/clusterrolebinding.yml
